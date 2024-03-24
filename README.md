@@ -151,6 +151,6 @@ Instituto Tecnológico de Costa Rica<br>
 
 
 ## License
->You can checkout the full license [here (opens in the same tab)](https://github.com/joshgc19/landscape_recognition_model/blob/master/LICENSE). 
+>You can checkout the full license [here (opens in the same tab)](https://github.com/joshgc19/fake-news-recognizer/blob/master/LICENSE). 
 
 This project is licensed under the terms of the **MIT** license. 

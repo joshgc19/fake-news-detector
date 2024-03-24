@@ -87,3 +87,8 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+# Persistence fles
+*.pkl
+*.npz
+*.joblib

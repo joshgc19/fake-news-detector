@@ -1,8 +1,8 @@
-
 from nltk import word_tokenize, download
 import numpy as np
 from numpy import ndarray
 from nltk.corpus import stopwords
+from scipy.sparse import dok_matrix
 
 download('punkt')
 download('stopwords')
@@ -34,7 +34,10 @@ def count_dict(sentences, word_set):
     words_dict = {word: 0 for word in word_set}
     for sentence in sentences:
         for word in sentence:
-            words_dict[word] += 1
+            try:
+                words_dict[word] += 1
+            except Exception as e:
+                continue
 
     return words_dict
 
@@ -55,16 +58,29 @@ def inverse_document_frequency(word, word_count, total_docs):
 def tf_idf(sentence, word_set, words_count, corpus_len, word_index):
     empty_vec = np.zeros((len(word_set),))
     for word in sentence:
-        tf = term_frequency(sentence, word)
-        idf = inverse_document_frequency(word, words_count, corpus_len)
-        empty_vec[word_index[word]] = tf * idf
+        if word in word_index.keys():
+            tf = term_frequency(sentence, word)
+            idf = inverse_document_frequency(word, words_count, corpus_len)
+            empty_vec[word_index[word]] = tf * idf
     return empty_vec
 
 
-def apply_tf_idf(corpus: ndarray):
+def apply_tf_idf(corpus: ndarray, words_index: dict = None, words: list = None):
     corpus_len = len(corpus)
-    sentences, word_set = tokenize_text(corpus)
-    word_index = dict(zip(word_set, range(len(word_set))))
-    words_count = count_dict(sentences, word_set)
-    vectors = [tf_idf(sentence, word_set, words_count, corpus_len, word_index) for sentence in sentences]
-    return vectors, word_index, word_set
+    sentences, words_set = tokenize_text(corpus)
+    if not words:
+        words = list(words_set)
+        del words_set
+    if not words_index:
+        words_index = dict(zip(words, range(len(words))))
+    words_count = count_dict(sentences, words)
+
+    features_matrix = dok_matrix((corpus_len, len(words)), dtype=np.float32)
+    for i, sentence in enumerate(sentences):
+        features = tf_idf(sentence, words, words_count, corpus_len, words_index)
+        for j, feature in enumerate(features):
+            if feature != 0:
+                features_matrix[i, j] = feature
+
+    # vectors = [tf_idf(sentence, word_set, words_count, corpus_len, word_index) for sentence in sentences]
+    return features_matrix, words_index, words

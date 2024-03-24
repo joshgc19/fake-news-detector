@@ -24,7 +24,7 @@ from data.make_dataset import make_dataset
 @click.argument('output_filepath', type=click.Path(resolve_path=False))
 def main(fake_news_filepath, true_news_filepath, output_filepath):
     """
-    Procedure that preprocesses the data from the input files, preprocessed them and saves them.
+    Main function of the script that preprocesses the data from the input files, preprocessed them and saves them.
     Args:
         fake_news_filepath(str): Filepath where the fake news dataset is located.
         true_news_filepath(str): Filepath where the true news dataset is located.
