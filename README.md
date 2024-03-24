@@ -1,57 +1,156 @@
-Fake News Recognizer
-==============================
+Fake News Detector
+===================
 
-This project implements a fake news detection system using a Decision Tree classifier and TF-IDF vectorization. The system is trained on labeled datasets to classify news articles as real or fake. It aims to help identify and mitigate the spread of misinformation.
+The proposed project focuses on developing a Fake News Detection System using data science methodologies. The system aims to classify news articles as either fake or real by leveraging the Term Frequency-Inverse Document Frequency (TF-IDF) technique and a decision classifier. The project involves several key components, including data preprocessing to clean and standardize the dataset, feature extraction using TF-IDF to represent the articles as numerical vectors, and implementing a decision classifier from scratch to classify the articles. The resulting model will be tested on a new dataset to evaluate its accuracy and effectiveness in detecting fake news. Overall, the project seeks to contribute to the ongoing efforts in combating misinformation by providing a reliable and efficient fake news detection solution.
 
-Project Organization
-------------
+[//]: <> (Badges should go here)
 
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+![Python](https://img.shields.io/badge/python-3670A0?style=flat&logo=python&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+![code size](https://img.shields.io/github/languages/code-size/joshgc19/fake-news-recognizer)
+![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=flat&logo=numpy&logoColor=white)
+
+# Table of contents
+* [Fake News Detector](#fake-news-detector)
+  * [Table of contents](#table-of-contents)
+  * [Installation](#installation)
+  * [Code Structure](#code-structure)
+  * [Implementation Overview](#implementation-overview)
+    * [Design Constraints](#design-constraints)
+    * [Chosen Features](#chosen-features)
+    * [Chosen Classifier](#chosen-classifier)
+  * [Data](#data)
+    * [Target Data Requirements](#target-data-requirements) 
+    * [Source Data](#source-data)
+    * [Data Preprocessing](#data-preprocessing)
+  * [Results](#results)
+    * [Training](#training)
+    * [Testing](#testing)
+  * [Conclusion](#conclusion)
+  * [Project Author](#project-author)
+  * [License](#license)
+
+# Installation
+To install needed dependencies for this project you can use the following pip command:
+```bash
+pip install requirements.txt
+```
+The project was implemented using python v3.12.2 and the latest libraries versions.
+
+# Code Structure
+```bash
+├── data
+│   ├── processed # Here is were the pre-processing module will store transformed and cleaned data
+│   └── raw # Here is the dataset an is treat as immutable
+├── models
+│   ├── training_dataset_features.csv # Matrix of features generated by the features extraction
+│   └── model_variables.txt # Any date needed to predict further observations
+├── src
+│   ├── classes 
+│   │   ├── __init__.py
+│   │   ├── DecisionTreeRegressor.py
+│   │   └── Node.py
+│   ├── common 
+│   │   ├── __init__.py
+│   │   └── files_utils.py # Utils needed to retrieve and save files
+│   ├── data 
+│   │   ├── __init__.py
+│   │   └── make_dataset.py # Contains functions that cleans and formats datasets
+│   ├── features
+│   │   ├── __init__.py
+│   │   └── build_features.py # Contains functions that retrieve features from a dataset and creates the recognition model
+│   └── models
+│       ├── __init__.py
+│       ├── predict_model.py 
+│       └── train_model.py
+├── __init__.py
+├── features_extraction.py
+├── preprocessing.py
+├── classifier.py
+├── requirements.txt
+├── LICENSE
+├── README.md
+└── .gitignore
+```
+
+# Implementation Overview
+## Design Constraints
+For this project the following design constraints were set aiming to create a recognition model with limited information:
+  * The model may only have up to 3 features.
+  * Selected features must rely solely in color and light, all edge-based features are out the scope.
+  * Training dataset must be limited and high resolution, up to 10 images.
+  * Accuracy level obtained must be greater than 50%.
+
+## Chosen Features
+The features chosen to be part of the features vector used throughout the project will be the following:
+  * **Sky percentage (SP)**: This feature represents the percentage of the image in which the sky is depicted. For this purpose a 50 stripes gradient must be calculated from top to bottom in search of a delta greater than 65 in _RGB_ scale.
+  * **Greeness (G)**: Percentage of green pixels contained in the image, for this project the color green will have the following _RGB_ color bounds: $G_L = (25, 25, 20)$ y $G_U =  (230, 255, 86)$.
+  * **Skyness (S)**: Percentage of blueish pixels contained in the image, for this project the color sky or blueish will have the following _RGB_ color bounds: $S_L = (170, 45, 100)$ y $S_U =  (255, 255, 255)$.
+
+And according to the above defined features, the feature vector that will be used is the following:
+
+$$\vec{F} = (SP, G, S)$$
+
+This features were chosen accounting for the design constraints present in the *[Design Constraints](#design-constraints)* section and the characterization of the dataset shown in the *[Target Data Requirements](#target-data-requirements)* section.
+
+## Chosen Classifier
+A statistical classifier was chosen for this project due to its ability to provide probabilistic outputs, offering insights into the expected value or average of a target variable and its error slack or variance. This capability is valuable for decision-making processes, especially in situations with incomplete or noisy data, as it allows for a more nuanced understanding of the data and its uncertainties. 
+
+# Data
+## Target data requirements
+  * The picture must have the following hierarchical structure from top to bottom:
+    * Blue daylight sky at the top with few clouds.
+    * Solid ground must be portrayed with dominance of nature at the middle.
+    * Buildings and housing may be present at the middle-bottom level.
+  * Bodies of water may not be visible.
+  * Depicted nature must be alive or green.
+  * No snow coverage must be shown.
+## Source Data
+All source images were obtained from Pexels.com, a platform offering a wide range of high-quality, free stock photos and videos. These images are commonly used for various projects and are licensed under the Creative Commons Zero (CC0) license, which means they are free for personal and commercial use without attribution required.
+
+## Data Preprocessing
+To easily extract the features from the dataset, from each feature an intermediate image was created, these were the following:
+
+* **Green Color Mask**:A color mask was applied to the original image to extract only the green pixels.
+* **Sky Color Mask (Light Blue)**: A color mask was applied to the original image to focus on the pixels representing the sky color, a light blue.
+* **50-Stripe Gradient**: A 50-stripe gradient was created from top to bottom in the original image. Each stripe of the gradient was calculated using the average of the pixels in that stripe.
 
 
---------
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+# Results
+## Training
+As a result of the training stage and each individual features vector, the average vector ( $E(\vec{F})$ ) which reflect central tendencies of the datas set and the variance vector ($\sigma_{\vec{F}}$) which represents the variability across the dataset. Both resulting vector are shown down below:
+    
+$$E(\vec{F}) = (0.32, 0.3315, 0.2601)$$
+
+$$\sigma_{\vec{F}} = (0.1841, 0.0540, 0.1428)$$
+## Testing
+The objetive of testing the current project is to determine the accuracy of the generated model. The testing dataset was composed of 10 high resolution images, which contained 5 landscape images and 5 non-landscape images such as animals or random settings.
+
+Using the automated testing process within the recognition module the following results were found: 
+
+| **Classification outcomes** | *Relative Frequency* |
+|-----------------------------|:--------------------:|
+| False positive              |         10%          |
+| False negative              |         20%          |
+| True positive               |         30%          |
+| True negative               |         40%          |
+
+Taking into account the true positive and true negative outcomes the accuracy level of the obtained model was of exactly 70%.
+
+# Conclusion
+As a summary, the preprocessing stage is critically important as it significantly impacts the quality of feature extraction, which forms the foundation of the model. Ensuring the correct selection of features and processing of data leads to a more precise model. Conversely, if the preprocessing stage is not carefully executed, the model may end up with a suboptimal set of features, leading to poor classification performance. Therefore, it is crucial to pay close attention to the preprocessing stage and features selection.
+
+# Project author
+
+## **Joshua Gamboa Calvo**<br>
+BS in Computing Engineering undergraduate<br>
+Instituto Tecnológico de Costa Rica<br>
+<br>
+[<img src="https://edent.github.io/SuperTinyIcons/images/svg/linkedin.svg" width="50px" style="border-radius:50%">](https://www.linkedin.com/in/joshgc19)  [<img src="https://edent.github.io/SuperTinyIcons/images/svg/github.svg" width="50px" style="border-radius:50%"/>](https://github.com/joshgc19)  [<img src="https://edent.github.io/SuperTinyIcons/images/svg/medium.svg" width="50px" style="border-radius:50%">](https://medium.com/@joshgc.19)<br> 
+
+
+## License
+>You can checkout the full license [here (opens in the same tab)](https://github.com/joshgc19/landscape_recognition_model/blob/master/LICENSE). 
+
+This project is licensed under the terms of the **MIT** license. 
