@@ -8,3 +8,5 @@ pandas
 nltk
 scipy
 scikit-learn
+python-dotenv
+joblib

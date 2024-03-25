@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 This file contains the functions needed to preprocess the data for the Fake News Recognizer.
-
-This file contains the following functions:
-
-    * word_cleaning - function that's applied to each row of the dataset
-    * clean_text - function that applies a cleaning function to all the dataset
-    * split_date - own function that shuffles and splits the dataset into training and testing sets for cross-validation
-    * make_dataset - function that adds needed columns and applied formatting functions to the dataset
 """
 
 import re

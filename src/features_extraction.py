@@ -11,12 +11,15 @@ This file contains the following functions:
     * main - main function of the script
 """
 
+import os
 import click
-
+from dotenv import load_dotenv
 
 from common.files_utils import load_csv_as_dataframe, save_data_to_file, load_file_as_object
 from features.build_features import apply_tf_idf
 import scipy.sparse as sp
+
+load_dotenv()
 
 
 @click.command()
@@ -38,6 +41,7 @@ def main(dataset_path: str, is_training: bool):
 
     # Extracts the temporal features as x
     x = dataset['text']
+    y = dataset['target']
     del dataset  # Memory optimization: Dataframe no longer needed
 
     # Check whether the current dataset is for training or testing
@@ -47,22 +51,22 @@ def main(dataset_path: str, is_training: bool):
     else:
         # Loading of words lists and words dict used to check the words taken into account when making the
         # prediction model
-        word_keys = load_file_as_object("../data/features/word_mapping.pkl", dict)
-        words = load_file_as_object("../data/features/words.pkl", list)
+        word_keys = load_file_as_object(os.getenv('FEATURES_DATA_DIR') + os.getenv('WORD_MAPPING'), dict)
+        words = load_file_as_object(os.getenv('FEATURES_DATA_DIR') + os.getenv('WORDS'), list)
         # Applying the TF-IDF algorithm to the testing dataset
         features_matrix = apply_tf_idf(x, word_keys, words)[0]
     del x  # Memory optimization: Corpus no longer needed
 
     # Saving the sparse matrix to memory, the sparse matrix used is DOK (Dictionary of Keys) which doesn't support
     # to be saved as npz, but can easily be transformed to COO, format used to save as npz
-    sp.save_npz(f'data/features/{'train' if is_training else 'test'}_features_vectors.npz', features_matrix.tocoo())
+    sp.save_npz(f'{os.getenv('FEATURES_DATA_DIR') + ('train' if is_training else 'test')}_features_vectors.npz', features_matrix.tocoo())
     if is_training:
-        del features_matrix  # Features matrix saved and no longer needed
+        del features_matrix, y  # Features matrix saved and no longer needed
         # Saving the dictionaries and words list needed to create feature matrices of testing datasets
-        save_data_to_file(word_keys, "data/features/word_mapping.pkl")
-        save_data_to_file(words, "data/features/words.pkl")
+        save_data_to_file(word_keys, os.getenv('FEATURES_DATA_DIR') + os.getenv('WORD_MAPPING'))
+        save_data_to_file(words, os.getenv('FEATURES_DATA_DIR') + os.getenv('WORDS'))
     else:
-        return features_matrix
+        return features_matrix, y
 
 
 if __name__ == '__main__':

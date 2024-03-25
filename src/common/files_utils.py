@@ -7,9 +7,13 @@ This file contains the following functions:
     * load_csv_as_dataframe - using pandas loads archive as a dataframe
     * save_csv_as_dataframe - using pandas writes a dataframe to an archive
     * save_data_to_file - using python method open writes to a new file
+    * load_file_as_object - using python method loads archive and casts it to a desired type
+    * dump_as_joblib_bin - using joblib to dump an object to a binary file
+    * load_joblib_as_object - using joblib to load an object
 """
 
 import pickle
+from joblib import load, dump
 
 import pandas as pd
 
@@ -67,8 +71,36 @@ def load_file_as_object(path: str, preferred_type: type):
         preferred_type(type): the preferred type in which the binary file will be cast to
 
     Returns:
-        (type): the loaded object cast
+        (dict | list |sklearn.tree.DecisionTreeClassifier): the loaded object cast
     """
     with (open(path, 'rb') as f):
         object_var = pickle.load(f)
         return preferred_type(object_var)
+
+
+def dump_as_joblib_bin(path: str, data: object):
+    """
+    Procedure that dumps an object to a binary file
+    Args:
+        path(str): path in which the binary file will be created, including file name and extension
+        data(object): data object to be saved as binary
+
+    Returns:
+        None
+    """
+    with open(path, 'wb') as f:
+        dump(data, f)
+
+
+def load_joblib_as_object(path: str, preferred_type: type):
+    """
+    Function that loads a binary file as an object and casts it
+    Args:
+        path(str): path in which the binary file is
+        preferred_type(type): type in which the object will be cast to
+
+    Returns:
+        type: cast object to the preferred type
+    """
+    with open(path, 'rb') as f:
+        return preferred_type(load(f))

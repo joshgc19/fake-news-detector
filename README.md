@@ -5,10 +5,13 @@ The proposed project focuses on developing a Fake News Detection System using da
 
 [//]: <> (Badges should go here)
 
-![Python](https://img.shields.io/badge/python-3670A0?style=flat&logo=python&logoColor=white)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+![Python](https://img.shields.io/badge/-Python-3776ab?style=flat&logo=Python&logoColor=F7DF1E)
+![ScikitLearn](https://img.shields.io/badge/-ScikitLearn-F7931E?style=flat&logo=scikitlearn&logoColor=white)
+![Pandas](https://img.shields.io/badge/-Pandas-150458?style=flat&logo=pandas&logoColor=white)
+![SciPy](https://img.shields.io/badge/-SciPy-8CAAE6?style=flat&logo=scipy&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 ![code size](https://img.shields.io/github/languages/code-size/joshgc19/fake-news-recognizer)
-![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=flat&logo=numpy&logoColor=white)
+
 
 # Table of contents
 * [Fake News Detector](#fake-news-detector)
@@ -127,16 +130,16 @@ $$\sigma_{\vec{F}} = (0.1841, 0.0540, 0.1428)$$
 ## Testing
 The objetive of testing the current project is to determine the accuracy of the generated model. The testing dataset was composed of 10 high resolution images, which contained 5 landscape images and 5 non-landscape images such as animals or random settings.
 
-Using the automated testing process within the recognition module the following results were found: 
+Using the automated testing process within the recognition module the following confusion matrix was found: 
 
-| **Classification outcomes** | *Relative Frequency* |
-|-----------------------------|:--------------------:|
-| False positive              |         10%          |
-| False negative              |         20%          |
-| True positive               |         30%          |
-| True negative               |         40%          |
+|                  | **Predicted True** | **Predicted False** | **Total** |
+|:----------------:|:------------------:|:-------------------:|:---------:|
+| **Actual True**  |        5257        |         26          |   5283    |
+| **Actual False** |         24         |        5917         |   5941    |
+|    **Total**     |        5281        |        5943         |   11224   |
 
-Taking into account the true positive and true negative outcomes the accuracy level of the obtained model was of exactly 70%.
+
+Taking into account the true positive and true negative outcomes the accuracy level of the obtained model was of approximately  99.5545%.
 
 # Conclusion
 As a summary, the preprocessing stage is critically important as it significantly impacts the quality of feature extraction, which forms the foundation of the model. Ensuring the correct selection of features and processing of data leads to a more precise model. Conversely, if the preprocessing stage is not carefully executed, the model may end up with a suboptimal set of features, leading to poor classification performance. Therefore, it is crucial to pay close attention to the preprocessing stage and features selection.
@@ -151,6 +154,6 @@ Instituto Tecnológico de Costa Rica<br>
 
 
 ## License
->You can checkout the full license [here (opens in the same tab)](https://github.com/joshgc19/fake-news-recognizer/tree/main?tab=MIT-1-ov-file). 
+>You can checkout the full license [here (opens in the same tab)](https://github.com/joshgc19/fake-news-recognizer/blob/master/LICENSE). 
 
 This project is licensed under the terms of the **MIT** license. 
