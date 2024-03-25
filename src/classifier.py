@@ -2,10 +2,6 @@
 """
 Classifier and accuracy checker for Fake News Recognizer.
 
-This script is used to extract the features from the datasets so it can be loaded into a Recognition Model.
-
-The output files are stored in 'data/features.
-
 This file contains the following functions:
 
     * main - main function of the script
@@ -27,17 +23,18 @@ load_dotenv()
 @click.argument('keep_model', type=click.BOOL)
 def main(keep_model=True):
     """
-
+    Main procedure of the script that retrieves or trains the classifier model to check its accuracy and print statistics
     Args:
-        keep_model:
+        keep_model(bool): whether to retrain the model or not
 
     Returns:
-
+        None
     """
+    # If a trained model exists load it
     if os.path.exists(os.getenv('MODEL_OBJ')) and keep_model:
         df = load_joblib_as_object(os.getenv('MODEL_OBJ'), DecisionTreeClassifier)
     else:
-
+        # If no train model is found, load train features matrix, labels and train the model
         train_vectorized_data = os.getenv('FEATURES_DATA_DIR') + os.getenv('TRAIN_FEATURES_MATRIX')
         x = load_npz(train_vectorized_data)
 
@@ -46,22 +43,28 @@ def main(keep_model=True):
 
         df = train_model(x, y)
 
+        # Memory optimization: variables no longer needed
         del x, y, train_data_file, train_vectorized_data
+
+        # Save model to binary file
         dump_as_joblib_bin(os.getenv('MODEL_OBJ'), df)
 
+    # Load test data to test accuracy of the model
     x_test = load_npz( os.getenv('FEATURES_DATA_DIR') + os.getenv('TEST_FEATURES_MATRIX'))
-
     y_test = load_csv_as_dataframe(os.getenv('PROCESSED_DATA_DIR') + os.getenv('TEST_DATA_CSV'))['target']
 
+    # Compute predictions of the model for the test dataset and score
     predictions = df.predict(x_test)
     score = df.score(x_test, y_test)
 
+    # Initialization of statistical variables
     test_dataset_len = len(y_test)
     false_positives = 0
     false_negatives = 0
     truth_positives = 0
     truth_negatives = 0
 
+    # Manual testing of all prediction to check its truth value
     for prediction, target in zip(predictions, y_test):
 
         # Count false and truth negatives and positives

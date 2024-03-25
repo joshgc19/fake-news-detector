@@ -11,24 +11,26 @@ This file contains the following functions:
     * main - main function of the script
 """
 
+import os
 import click
+from dotenv import load_dotenv
 
 from common.files_utils import load_csv_as_dataframe, save_dataframe_as_csv
 from data.make_dataset import make_dataset
+
+load_dotenv()
 
 
 # Click allows to retrieve arguments when calling the file from console such as $ python preprocessing.py <args>
 @click.command()
 @click.argument('fake_news_filepath', type=click.Path(exists=True, resolve_path=False))
 @click.argument('true_news_filepath', type=click.Path(exists=True, resolve_path=False))
-@click.argument('output_filepath', type=click.Path(resolve_path=False))
-def main(fake_news_filepath, true_news_filepath, output_filepath):
+def main(fake_news_filepath, true_news_filepath):
     """
     Main function of the script that preprocesses the data from the input files, preprocessed them and saves them.
     Args:
         fake_news_filepath(str): Filepath where the fake news dataset is located.
         true_news_filepath(str): Filepath where the true news dataset is located.
-        output_filepath(str): Filepath where the output files should be saved to.
 
     Returns:
         None
@@ -40,9 +42,9 @@ def main(fake_news_filepath, true_news_filepath, output_filepath):
     # Preprocess fake and true news data
     train_data, test_data = make_dataset(fake_data, true_data)
 
-    # Write preprocessed news data
-    save_dataframe_as_csv(train_data, output_filepath + "/train_data.csv")
-    save_dataframe_as_csv(test_data, output_filepath + "/test_data.csv")
+    # Write preprocessed news data file path must contain a / at the end
+    save_dataframe_as_csv(train_data, os.getenv('PROCESSED_DATA_DIR') + os.getenv('TRAIN_DATA_CSV'))
+    save_dataframe_as_csv(test_data, os.getenv('PROCESSED_DATA_DIR') + os.getenv('TEST_DATA_CSV'))
 
 
 if __name__ == "__main__":
