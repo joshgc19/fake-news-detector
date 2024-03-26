@@ -118,7 +118,7 @@ Additionally, implementing a stemming algorithm, such as the Porter stemming alg
 
 # Acknowledgments
   * Dataset provided by [Kaggle](https://www.kaggle.com/datasets/emineyetm/fake-news-detection-datasets/data). 
-  * Base project tutorial [Learnbay_Official](https://medium.com/@Learnbay_official/step-by-step-guide-to-fake-news-detection-system-from-scratch-f4f04f852b1f).
+  * Base project tutorial by [Learnbay_Official](https://medium.com/@Learnbay_official/step-by-step-guide-to-fake-news-detection-system-from-scratch-f4f04f852b1f).
   * TF-IDF implementation base by [Ashwin M](https://medium.com/@ashwinnaidu1991/creating-a-tf-idf-model-from-scratch-in-python-71047f16494e).
 
 # Project author
