@@ -104,5 +104,3 @@ def load_joblib_as_object(path: str, preferred_type: type):
     """
     with open(path, 'rb') as f:
         return preferred_type(load(f))
-
-print(len(load_file_as_object("../../data/features/words.pkl", list)))
