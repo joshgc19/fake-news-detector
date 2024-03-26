@@ -10,8 +10,8 @@ The proposed project focuses on developing a Fake News Detection System using da
 ![Pandas](https://img.shields.io/badge/-Pandas-150458?style=flat&logo=pandas&logoColor=white)
 ![SciPy](https://img.shields.io/badge/-SciPy-8CAAE6?style=flat&logo=scipy&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
-![code size](https://img.shields.io/github/languages/code-size/joshgc19/fake-news-recognizer)
-![GitHub last commit](https://img.shields.io/github/last-commit/joshgc19/fake-news-recognizer)
+![code size](https://img.shields.io/github/languages/code-size/joshgc19/fake-news-detector)
+![GitHub last commit](https://img.shields.io/github/last-commit/joshgc19/fake-news-detector)
 
 
 # Table of contents
@@ -133,6 +133,6 @@ Costa Rica Technological Institute (Instituto Tecnológico de Costa Rica)<br>
 
 
 # License
->You can checkout the full license [here (opens in the same tab)](https://github.com/joshgc19/fake-news-recognizer/blob/master/LICENSE). 
+>You can checkout the full license [here (opens in the same tab)](https://github.com/joshgc19/fake-news-detector/blob/master/LICENSE). 
 
 This project is licensed under the terms of the **MIT** license. 
